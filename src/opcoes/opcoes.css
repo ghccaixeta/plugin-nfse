@@ -1,0 +1,102 @@
+@import '../estilo/tema.css';
+
+body {
+  font-size: 14px;
+}
+
+main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.marca {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  color: #fff;
+  background: var(--destaque);
+}
+
+.marca svg.icone {
+  width: 22px;
+  height: 22px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.suave,
+footer {
+  color: var(--suave);
+}
+
+.card {
+  padding: 16px 18px;
+}
+
+.card p {
+  margin: 0 0 14px;
+  color: var(--texto-rotulo);
+}
+
+.caixa {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-weight: 400;
+}
+
+.caixa input {
+  width: 16px;
+  min-height: 0;
+  height: 16px;
+  accent-color: var(--primaria);
+}
+
+.arquivo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px;
+  margin: 0;
+  font-weight: 600;
+  color: var(--primaria-texto);
+  background: var(--primaria);
+  border-radius: var(--raio);
+  cursor: pointer;
+}
+
+.arquivo:hover {
+  background: var(--primaria-hover);
+}
+
+.arquivo input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.arquivo:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--foco) 30%, transparent);
+}
+
+footer {
+  margin-top: 24px;
+  font-size: 12px;
+}

@@ -1,0 +1,211 @@
+@import '../estilo/tema.css';
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabeçalho */
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--divisor);
+}
+
+.marca {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 10px;
+  color: #fff;
+  background: var(--destaque);
+}
+
+.marca svg.icone {
+  width: 20px;
+  height: 20px;
+}
+
+.titulo {
+  flex: 1;
+  min-width: 0;
+}
+
+.titulo h1 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.titulo p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--suave);
+}
+
+/* Conteúdo rolável */
+main {
+  flex: 1;
+  padding: 14px 16px 8px;
+}
+
+.modelo {
+  margin-bottom: 12px;
+}
+
+.linha-modelo {
+  display: flex;
+  gap: 8px;
+}
+
+.linha-modelo select {
+  flex: 1;
+  min-width: 0;
+}
+
+.campo {
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.dupla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+/* Campo com prefixo/sufixo (R$, %) */
+.afixo {
+  position: relative;
+}
+
+.afixo span {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--suave);
+  pointer-events: none;
+}
+
+.afixo .antes {
+  left: 11px;
+}
+
+.afixo .depois {
+  right: 11px;
+}
+
+.afixo .antes + input {
+  padding-left: 36px;
+  text-align: right;
+}
+
+.afixo input:has(+ .depois) {
+  padding-right: 30px;
+  text-align: right;
+}
+
+.estreito {
+  max-width: 50%;
+}
+
+.aviso-legal {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--suave);
+}
+
+/* Rodapé fixo com as ações */
+.acoes {
+  position: sticky;
+  bottom: 0;
+  padding: 12px 16px 14px;
+  background: var(--fundo);
+  border-top: 1px solid var(--divisor);
+}
+
+.botoes-acao {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+}
+
+.dica {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--suave);
+}
+
+.dica svg.icone {
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+}
+
+.dica strong {
+  color: var(--texto);
+}
+
+.dica .link {
+  font-size: 12px;
+}
+
+/* Painel estreito (arrastado para a menor largura). */
+@media (max-width: 300px) {
+  .topo,
+  main,
+  .acoes {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .titulo h1 {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card {
+    padding: 12px 10px 4px;
+  }
+
+  .dupla {
+    gap: 8px;
+  }
+
+  input,
+  select,
+  textarea {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .afixo .antes + input {
+    padding-left: 30px;
+  }
+
+  .linha-modelo {
+    gap: 6px;
+  }
+
+  button.icone-so {
+    width: 32px;
+  }
+
+  .opcional {
+    display: none;
+  }
+
+  .mono {
+    letter-spacing: 0;
+  }
+}
