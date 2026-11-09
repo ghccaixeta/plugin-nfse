@@ -7,8 +7,9 @@
   },
   "scripts": {
     "build": "vite build && vite build -c vite.content.config.ts --mode ponte && vite build -c vite.content.config.ts --mode preenchedor",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json"
+    "test": "vitest run && node scripts/verificar-vazamento.mjs",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
+    "verificar:vazamento": "node scripts/verificar-vazamento.mjs"
   },
   "devDependencies": {
     "@types/chrome": "^0.3.7",
