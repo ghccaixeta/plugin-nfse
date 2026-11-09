@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.zip
+# HTML real do portal com dados pessoais — nunca commitar
+fixtures-raw/
+.playwright-mcp/
