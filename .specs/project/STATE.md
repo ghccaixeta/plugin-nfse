@@ -32,9 +32,9 @@
 
 ## Handoff (2026-11-09, 3ª sessão)
 
-- Branch `feature/preenchedor-v1`. **Nada commitado.** T1–T13 + painel lateral + visual + correções de foco, /simplify, /code-review e /security-audit (relatório em `~/security-audit-skill/plugin-nfse/run-1/REPORT.md`).
-- Testes: 288; typecheck, build e `node scripts/verificar-vazamento.mjs` verdes.
-- **T14 pendente** (HITL no Chrome do dev): o fluxo completo (preenchedor real + ponte simulada, sem foco, disparo no DOMContentLoaded) chegou à Conferência no portal real após esperar o `load`. Falta o dev repetir pela extensão de verdade. Se "Data de competência não habilitou" voltar, pedir print e conferir se há duas cópias da extensão.
+- Branch `feature/preenchedor-v1` com 7 commits por área (build, dominio, armazenamento, portal, popup, build/vazamento, docs). T1–T14 concluídas; T14 validado pelo dev no Chrome dele.
+- `npm test` (296 testes + verificação de vazamento), typecheck e build verdes. Auditoria: `~/security-audit-skill/plugin-nfse/run-1/REPORT.md`.
+- Próximo: fechar a branch (merge em develop ou PR) — decisão do dev.
 - Ainda não validado no portal real: a mensagem de recusa do portal (validação após Avançar). Rascunhos de teste criados hoje: "SPIKE T8 - NAO EMITIR" e "TESTE EXTENSAO - NAO EMITIR".
 - Lacuna adiada da auditoria: ciclo de vida do pedido por aba (criarPedido sobrescreve pedido em andamento; bfcache; segunda emissão na mesma aba).
 - Pendente de decisão do dev: CNPJ alfanumérico (o portal já aceita, classe `cpfcnpj-alfanumerico`).
