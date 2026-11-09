@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Preenchedor NFS-e Nacional",
+  "version": "0.1.0",
+  "description": "Preenche o formulário do Emissor Nacional da NFS-e a partir de modelos salvos. Extensão não oficial.",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "storage",
+    "tabs",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "https://www.nfse.gov.br/EmissorNacional/*"
+  ],
+  "background": {
+    "service_worker": "sw.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.nfse.gov.br/EmissorNacional/DPS/*"
+      ],
+      "js": [
+        "ponte.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.nfse.gov.br/EmissorNacional/DPS/*"
+      ],
+      "js": [
+        "preenchedor.js"
+      ],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    }
+  ],
+  "action": {
+    "default_title": "Preenchedor NFS-e"
+  },
+  "side_panel": {
+    "default_path": "popup/index.html"
+  },
+  "options_page": "opcoes/index.html"
+}
