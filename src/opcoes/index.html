@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Preenchedor NFS-e — Importar e exportar</title>
+    <link rel="stylesheet" href="./opcoes.css" />
+  </head>
+  <body>
+    <main>
+      <header class="topo">
+        <div class="marca" aria-hidden="true">
+          <svg class="icone" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 13h6M9 17h4" /></svg>
+        </div>
+        <h1>Importar e exportar modelos</h1>
+      </header>
+      <p class="suave">Leve seus modelos e padrões para outra máquina ou compartilhe com outra pessoa. Os dados ficam só neste navegador.</p>
+
+      <section class="card">
+        <h2>Exportar</h2>
+        <p>Baixa um arquivo <code>nfse-modelos-AAAA-MM-DD.json</code> com os padrões e todos os modelos.</p>
+        <button type="button" id="exportar" class="primario">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16" /></svg>
+          Exportar
+        </button>
+      </section>
+
+      <section class="card">
+        <h2>Importar</h2>
+        <p>Os modelos do arquivo são somados aos existentes. Para cada apelido repetido, você escolhe se substitui.</p>
+        <label class="caixa"><input type="checkbox" id="importarPadroes" /> Importar também os padrões</label>
+        <label class="arquivo">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V8m0 0-4 4m4-4 4 4M4 4h16" /></svg>
+          Escolher arquivo…
+          <input type="file" id="arquivo" accept=".json,application/json" />
+        </label>
+      </section>
+
+      <p id="status" class="status" role="status" hidden></p>
+
+      <footer>Extensão não oficial, sem vínculo com a Receita Federal ou o Emissor Nacional.</footer>
+    </main>
+    <script type="module" src="./opcoes.ts"></script>
+  </body>
+</html>

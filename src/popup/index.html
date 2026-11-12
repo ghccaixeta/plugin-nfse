@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Preenchedor NFS-e</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <header class="topo">
+      <div class="marca" aria-hidden="true">
+        <svg class="icone" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M9 13h6M9 17h4" /></svg>
+      </div>
+      <div class="titulo">
+        <h1>Preenchedor NFS-e</h1>
+        <p>Emissor Nacional</p>
+      </div>
+      <button type="button" id="abrirOpcoes" class="icone-so contorno" title="Importar/Exportar modelos" aria-label="Importar/Exportar modelos">
+        <svg class="icone" viewBox="0 0 24 24"><path d="M8 4v16m0 0-4-4m4 4 4-4" /><path d="M16 20V4m0 0-4 4m4-4 4 4" /></svg>
+      </button>
+    </header>
+
+    <main>
+      <div class="modelo">
+        <label for="modelo">Modelo</label>
+        <div class="linha-modelo">
+          <select id="modelo"><option value="">Sem modelo</option></select>
+          <button type="button" id="salvarModelo" class="icone-so" title="Salvar como modelo" aria-label="Salvar como modelo">
+            <svg class="icone" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+          <button type="button" id="atualizarModelo" class="icone-so" title="Atualizar modelo com os valores atuais" aria-label="Atualizar modelo" disabled>
+            <svg class="icone" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><path d="M17 21v-8H7v8M7 3v5h8" /></svg>
+          </button>
+          <button type="button" id="excluirModelo" class="icone-so" title="Excluir modelo" aria-label="Excluir modelo" disabled>
+            <svg class="icone" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14M10 11v6M14 11v6" /></svg>
+          </button>
+        </div>
+      </div>
+
+      <form id="formulario" novalidate>
+        <fieldset class="card">
+          <legend>Tomador</legend>
+          <div class="campo">
+            <label for="cnpjTomador">CNPJ</label>
+            <input id="cnpjTomador" class="mono" inputmode="numeric" autocomplete="off" placeholder="00.000.000/0000-00" />
+            <small class="erro" data-erro-de="cnpjTomador"></small>
+          </div>
+          <div class="dupla">
+            <div class="campo">
+              <label for="emailTomador">E-mail <span class="opcional">opcional</span></label>
+              <input id="emailTomador" type="email" autocomplete="off" />
+              <small class="erro" data-erro-de="emailTomador"></small>
+            </div>
+            <div class="campo">
+              <label for="telefoneTomador">Telefone <span class="opcional">opcional</span></label>
+              <input id="telefoneTomador" inputmode="tel" autocomplete="off" />
+              <small class="erro" data-erro-de="telefoneTomador"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="card">
+          <legend>Serviço</legend>
+          <div class="dupla">
+            <div class="campo">
+              <label for="valor">Valor</label>
+              <div class="afixo">
+                <span class="antes">R$</span>
+                <input id="valor" class="mono" inputmode="decimal" placeholder="1.234,56" />
+              </div>
+              <small class="erro" data-erro-de="valor"></small>
+            </div>
+            <div class="campo">
+              <label for="dataCompetencia">Competência</label>
+              <input id="dataCompetencia" class="mono" inputmode="numeric" placeholder="dd/mm/aaaa" />
+              <small class="erro" data-erro-de="dataCompetencia"></small>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" rows="3" maxlength="2000" placeholder="Descreva o serviço prestado"></textarea>
+            <small class="erro" data-erro-de="descricao"></small>
+          </div>
+          <div class="campo">
+            <label for="municipio">Município da prestação</label>
+            <input id="municipio" placeholder="Goiânia/GO" aria-describedby="ajudaMunicipio" />
+            <small class="erro" data-erro-de="municipio"></small>
+            <small class="ajuda" id="ajudaMunicipio">Em branco, usa o município do emitente.</small>
+          </div>
+          <div class="dupla">
+            <div class="campo">
+              <label for="codigoTributacao">Cód. de tributação</label>
+              <input id="codigoTributacao" class="mono" inputmode="numeric" maxlength="6" placeholder="010101" />
+              <small class="erro" data-erro-de="codigoTributacao"></small>
+            </div>
+            <div class="campo">
+              <label for="nbs">NBS</label>
+              <input id="nbs" class="mono" inputmode="numeric" maxlength="9" placeholder="115029000" />
+              <small class="erro" data-erro-de="nbs"></small>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="card">
+          <legend>Simples Nacional</legend>
+          <div class="campo">
+            <label for="regime">Regime de apuração</label>
+            <select id="regime">
+              <option value="1">1 — Tributos federais e municipal pelo Simples Nacional</option>
+              <option value="2">2 — Federais pelo Simples Nacional e ISSQN pela NFS-e</option>
+              <option value="3">3 — Federais e municipal pela NFS-e</option>
+            </select>
+            <small class="erro" data-erro-de="regime"></small>
+          </div>
+          <div class="campo estreito">
+            <label for="aliquota">Alíquota</label>
+            <div class="afixo">
+              <input id="aliquota" class="mono" inputmode="decimal" placeholder="2,01" />
+              <span class="depois">%</span>
+            </div>
+            <small class="erro" data-erro-de="aliquota"></small>
+          </div>
+        </fieldset>
+      </form>
+
+      <p class="aviso-legal">Extensão não oficial, sem vínculo com a Receita Federal ou o Emissor Nacional.</p>
+    </main>
+
+    <footer class="acoes">
+      <p id="status" class="status" role="status" hidden></p>
+      <div class="botoes-acao">
+        <button type="button" id="salvarPadrao" class="contorno">Salvar padrão</button>
+        <button type="submit" id="preencher" form="formulario" class="primario">
+          <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z" /></svg>
+          Preencher
+        </button>
+      </div>
+      <p id="dicaAba" class="dica" hidden>
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 16v-4M12 8h.01" /></svg>
+        <span>
+          Abra a etapa <strong>Pessoas</strong> da emissão no Emissor Nacional para preencher.
+          <button type="button" id="abrirEmissao" class="link">Abrir emissão de NFS-e</button>
+        </span>
+      </p>
+    </footer>
+
+    <dialog id="pergunta" aria-labelledby="perguntaTexto">
+      <form method="dialog">
+        <p id="perguntaTexto"></p>
+        <input id="perguntaEntrada" autocomplete="off" hidden />
+        <div class="botoes">
+          <button type="button" id="perguntaCancelar" class="contorno">Cancelar</button>
+          <button type="submit" value="ok" id="perguntaOk" class="primario">OK</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>

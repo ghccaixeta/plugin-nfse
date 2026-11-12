@@ -1,0 +1,300 @@
+/* Tema do Preenchedor NFS-e: painel lateral e página de opções.
+   Escuro por padrão (mockup "Popup — repaginado"); variante clara pelo sistema.
+   Sem fontes ou recursos externos: nada sai do navegador. */
+
+:root {
+  color-scheme: dark;
+  --fundo: #1c1d22;
+  --fundo-card: #23252c;
+  --fundo-campo: #15161a;
+  --fundo-botao: #2a2c34;
+  --borda: #30323a;
+  --borda-campo: #2e3038;
+  --divisor: #2c2e35;
+  --texto: #e6e7ea;
+  --texto-rotulo: #c9ccd3;
+  --suave: #8e939d;
+  --placeholder: #6b6f78;
+  --destaque: #f43f5e;
+  --primaria: #2563eb;
+  --primaria-hover: #1d4ed8;
+  --primaria-texto: #ffffff;
+  --foco: #3b82f6;
+  --erro: #f87171;
+  --ok: #4ade80;
+  --raio: 8px;
+  --raio-card: 14px;
+  --mono: ui-monospace, 'SF Mono', 'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --fundo: #f6f7f9;
+    --fundo-card: #ffffff;
+    --fundo-campo: #ffffff;
+    --fundo-botao: #f1f2f5;
+    --borda: #e3e5ea;
+    --borda-campo: #d4d7de;
+    --divisor: #e3e5ea;
+    --texto: #16171c;
+    --texto-rotulo: #33363d;
+    --suave: #6b6f78;
+    --placeholder: #9aa0a9;
+    --destaque: #e11d48;
+    --erro: #dc2626;
+    --ok: #16a34a;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Classes com `display` não podem vencer o atributo hidden. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  font: 13px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--texto);
+  background: var(--fundo);
+  -webkit-font-smoothing: antialiased;
+}
+
+svg.icone {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Cards e títulos de seção */
+.card {
+  min-inline-size: 0; /* fieldset: não crescer com o conteúdo */
+  background: var(--fundo-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-card);
+  padding: 14px 16px 6px;
+  margin: 0 0 12px;
+  min-width: 0;
+}
+
+.card > legend,
+.card > h2 {
+  float: left;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--destaque);
+}
+
+.card > legend + * {
+  clear: both;
+}
+
+/* Campos */
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--texto-rotulo);
+}
+
+.opcional {
+  font-weight: 400;
+  color: var(--suave);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 36px;
+  padding: 7px 11px;
+  font: inherit;
+  color: var(--texto);
+  background: var(--fundo-campo);
+  border: 1px solid var(--borda-campo);
+  border-radius: var(--raio);
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--placeholder);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: none;
+  border-color: var(--foco);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--foco) 30%, transparent);
+}
+
+select {
+  appearance: none;
+  padding-right: 32px;
+  text-overflow: ellipsis;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238e939d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.mono {
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+
+[aria-invalid='true'],
+[aria-invalid='true']:focus-visible {
+  border-color: var(--erro);
+}
+
+[aria-invalid='true']:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--erro) 30%, transparent);
+}
+
+.erro {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--erro);
+}
+
+.erro:empty {
+  display: none;
+}
+
+.ajuda {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--suave);
+}
+
+/* Botões */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px;
+  font: inherit;
+  font-weight: 500;
+  color: var(--texto);
+  background: var(--fundo-botao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  cursor: pointer;
+  transition: background 0.12s, opacity 0.12s;
+}
+
+button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--fundo-botao) 85%, var(--texto));
+}
+
+button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+button.contorno {
+  background: transparent;
+}
+
+button.primario {
+  color: var(--primaria-texto);
+  background: var(--primaria);
+  border-color: var(--primaria);
+  font-weight: 600;
+}
+
+button.primario:hover:not(:disabled) {
+  background: var(--primaria-hover);
+}
+
+button.icone-so {
+  width: 36px;
+  padding: 0;
+  flex: none;
+}
+
+button.link {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--foco);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Mensagem de status */
+.status {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border-radius: var(--raio);
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--foco);
+  background: var(--fundo-card);
+}
+
+.status[data-tipo='erro'] {
+  border-left-color: var(--erro);
+  color: var(--erro);
+}
+
+.status[data-tipo='ok'] {
+  border-left-color: var(--ok);
+}
+
+/* Diálogo próprio (substitui prompt/confirm) */
+dialog {
+  width: min(340px, calc(100vw - 32px));
+  padding: 16px;
+  color: var(--texto);
+  background: var(--fundo-card);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-card);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+dialog p {
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+
+dialog input {
+  margin-bottom: 14px;
+}
+
+dialog .botoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

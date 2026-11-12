@@ -31,6 +31,7 @@ Ordem importa: até responder IBS/CBS, todos os campos ficam desabilitados.
 | 3 | Regime apuração SN | `#SimplesNacional_RegimeApuracaoTributosSN` (Chosen) | `1` = federais e municipal pelo SN; `2`, `3` |
 | — | Compra governamental / Destinatário | `EhCompraGovernamental`, `DestinatarioEhOAdquirente` | ficam desabilitados com IBS/CBS = Não |
 | — | Tomador local | `input[name="Tomador.LocalDomicilio"][value="1"]` | Brasil (padrão) |
+| 3b | Município do emitente (leitura) | `#Prestador_EnderecoNacional_NomeMunicipio` (hidden) | já vem no formato `Nome/UF` (ex.: `Goianésia/GO`); usar como município da prestação quando vazio |
 | 4 | CNPJ tomador | `#Tomador_Inscricao` | digitar só dígitos |
 | 5 | Buscar | `#btn_Tomador_Inscricao_pesquisar` | preenche `#Tomador_Nome` (readonly) |
 | — | Telefone / E-mail | `#Tomador_Telefone`, `#Tomador_Email` | opcionais |
@@ -51,7 +52,7 @@ Ao lado da busca há `#btn_Tomador_Inscricao_historico` (histórico de tomadores
 | 4 | Descrição | `#ServicoPrestado_Descricao` | texto (máx. 2000) |
 | 5 | NBS | `#ServicoPrestado_CodigoNBS` (Chosen, ~918 opções estáticas) | `val('115029000')` + `chosen:updated` + `change` |
 | — | Indicador da operação | `#ServicoPrestado_CodigoIndOp` | vazio com IBS/CBS = Não; não exigido |
-| 6 | Avançar | `button.btn-primary:has-text("Avançar")` | → `/DPS/Tributacao?idr=…` |
+| 6 | Avançar | `button.btn-primary` com texto "Avançar" | → `/DPS/Tributacao?idr=…` |
 
 ## Etapa 3 — Valores (`/EmissorNacional/DPS/Tributacao?idr=…`)
 
@@ -64,9 +65,52 @@ Ao lado da busca há `#btn_Tomador_Inscricao_historico` (histórico de tomadores
 | 4 | Retenção PIS/COFINS/CSLL | `#TributacaoFederal_PISCofins_TipoRetencao` (Chosen) | `0` = Não Retidos |
 | 5 | Valor aproximado dos tributos | `input[name="ValorTributos.TipoValorTributos"][value="4"]` (label) | Informar alíquota do SN (o portal lembra a última escolha) |
 | 6 | Alíquota SN | `#ValorTributos_AliquotaSN` | limpar + digitar `201` → `2,01` (portal lembra o último valor) |
-| 7 | Avançar | `button.btn-primary:has-text("Avançar")` | → `/DPS/EmitirNFSe?idr=…` |
+| 7 | Avançar | `button.btn-primary` com texto "Avançar" | → `/DPS/EmitirNFSe?idr=…` |
 
 ## Etapa 4 — Conferência (`/EmissorNacional/DPS/EmitirNFSe?idr=…`)
 
 Resumo + prévia de valores. Botão final `#btnProsseguir` ("Emitir NFS-e") — **a extensão nunca clica**.
 Detectar chegada pela URL `/DPS/EmitirNFSe` ou pela presença de `#btnProsseguir`.
+
+## Spike T8 — primitivas validadas no portal real (09/11/2026)
+
+`src/portal/acoes.ts` + `seletores.ts` compilados como IIFE e injetados com `page.addScriptTag` (mundo MAIN),
+percorrendo Pessoas → Serviço → Valores → Conferência sem emitir. Todas as primitivas funcionaram:
+
+| Primitiva | Onde | Resultado lido do campo |
+|---|---|---|
+| `marcarRadio` (clique no label) | IBS/CBS, intermediário, imunidade, retenção ISSQN, tipo de tributos 4 | marcado |
+| `digitarMascarado` | data `09112026` → `09/11/2026` (carrega emitente); CNPJ → `NN.NNN.NNN/NNNN-NN`; valor `123456` → `1.234,56`; alíquota `350` → `3,50` e de volta `201` → `2,01` | sobrescreve o valor anterior |
+| `clicar` + `esperar(..., 'preenchido')` | Buscar tomador → `#Tomador_Nome` | nome carregado |
+| `selecionarChosen` | regime `1`, NBS `115029000`, PIS/COFINS `0`/`0` | valor e texto do Chosen atualizados |
+| `selecionarSelect2Ajax` | município `Goianésia` exato `Goianésia/GO` (código IBGE 5208608); código `010101` prefixo `01.01.01 - ` | opção certa, dropdown fechado |
+| `clicarAvancar` | Pessoas (`#btnAvancar`), Serviço e Valores (`button.btn-primary`) | navegou; na Conferência `encontrarAvancar` → `null` |
+
+Descobertas:
+
+- **Máscara = VMasker** (vanilla-masker), não `jquery.mask` (`jQuery.fn.mask` não existe). Ela formata num
+  `setTimeout(0)` após o `keyup`. O `change` da data valida o valor na hora: sem ceder o event loop entre as teclas,
+  o portal recebia `09112026`, considerava a data inválida e não carregava o emitente. Corrigido em `digitarMascarado`
+  (cede um ciclo após cada tecla) com teste de regressão.
+- `#DataCompetencia` também tem bootstrap-datepicker (handlers jQuery de keyup/keydown/blur); não atrapalha.
+- A flag `ServicoPrestado.CodigoComplementarMunicipalObrigatorio` vem `False` no carregamento e vira `false` depois
+  de escolher o código — comparar sem diferenciar maiúsculas.
+- Select2 v4 aceita a seleção por `mousedown`/`mouseup`/`click` sintéticos na opção.
+
+## Foco e consulta do CNPJ (T14, 09/11/2026)
+
+- A consulta do tomador roda no `focusout` de `.cpfcnpj-alfanumerico` (`#Tomador_Inscricao`), não só na lupa. Ela é
+  ignorada sem aviso se o campo estiver desabilitado/readonly ou se o CNPJ for igual à última consulta
+  (`window.UltConsCNC_Inscricao`) no mesmo painel. Falha da API ou CNPJ inexistente → alerta "não foi encontrada".
+- O portal usa jQuery 3.3.1, que simula `focusout` a partir de `blur` (captura no `document`).
+- Com o documento sem foco (clique no painel lateral da extensão), `blur()` não dispara eventos; a extensão dispara
+  `blur`/`focusout` sintéticos nesse caso (`src/portal/acoes.ts`).
+- O campo do CNPJ já aceita CNPJ alfanumérico (classe `cpfcnpj-alfanumerico`, `AplicarMascaraCpfCnpjAlfanumerico`).
+- `RecuperarOpcaoSN`: se a opção do Simples do emitente não for "3", o portal esconde e limpa o regime de apuração.
+
+## Momento de agir (T14, 09/11/2026)
+
+- O Pessoas/Serviço/Valores só ficam utilizáveis depois do `$(document).ready` do portal (registra os handlers de IBS/CBS
+  e data) e da inicialização do Select2/Chosen. Um content script em `document_idle` pode rodar antes disso.
+- Select2 inicializado = `<select>` com a classe `select2-hidden-accessible`; antes, `select2('open')` lança TypeError.
+- A extensão espera o `load` da página antes de preencher; validado sem foco do documento até a Conferência.
