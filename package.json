@@ -1,6 +1,6 @@
 {
   "name": "preenchedor-nfse-nacional",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Extensão Chrome que preenche o formulário do Emissor Nacional da NFS-e",
   "directories": {
     "doc": "docs"
