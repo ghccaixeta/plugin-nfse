@@ -4,3 +4,9 @@ dist/
 # HTML real do portal com dados pessoais — nunca commitar
 fixtures-raw/
 .playwright-mcp/
+
+# Segredos e exportações de modelos (dados de tomadores)
+.env*
+*.pem
+*.key
+nfse-modelos-*.json

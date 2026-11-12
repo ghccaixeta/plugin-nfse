@@ -1,0 +1,27 @@
+{
+  "name": "preenchedor-nfse-nacional",
+  "version": "1.0.0",
+  "description": "Extensão Chrome que preenche o formulário do Emissor Nacional da NFS-e",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "vite build && vite build -c vite.content.config.ts --mode ponte && vite build -c vite.content.config.ts --mode preenchedor",
+    "test": "vitest run && node scripts/verificar-vazamento.mjs",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.node.json",
+    "verificar:vazamento": "node scripts/verificar-vazamento.mjs"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.3.7",
+    "@types/node": "^26.6.6",
+    "jsdom": "^31.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7",
+    "vitest": "^5.1.0"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  }
+}

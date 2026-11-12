@@ -1,0 +1,9 @@
+{
+  // Configs do build e testes: rodam no Node, então enxergam @types/node.
+  // O código da extensão (src/) fica em tsconfig.json, sem tipos do Node.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "chrome", "vite/client"]
+  },
+  "include": ["tests", "vite.config.ts", "vite.content.config.ts", "vitest.config.ts"]
+}
