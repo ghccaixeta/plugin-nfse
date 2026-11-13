@@ -18,6 +18,7 @@ export const PESSOAS = {
   dataCompetencia: { css: '#DataCompetencia', nome: 'Data de competência' },
   emitentePrestador: radio('TipoEmitente', '1', 'Emitir como Prestador'),
   regime: { css: '#SimplesNacional_RegimeApuracaoTributosSN', nome: 'Regime de apuração' }, // Chosen
+  opcaoSimples: { css: '#SimplesNacional_Opcao', nome: 'Enquadramento' }, // hidden, preenchido com o emitente
   tomadorBrasil: radio('Tomador.LocalDomicilio', '1', 'Tomador no Brasil'),
   municipioEmitente: { css: '#Prestador_EnderecoNacional_NomeMunicipio', nome: 'Município do emitente' }, // hidden, 'Nome/UF'
   cnpjTomador: { css: '#Tomador_Inscricao', nome: 'CNPJ do tomador' },
@@ -54,6 +55,14 @@ export const OPCOES = {
   pisCofinsNenhum: '0', // "00 - Nenhum"
   pisCofinsNaoRetidos: '0', // "Não Retidos"
 } as const;
+
+/** `SimplesNacional.Opcao` do emitente (tabela opSimpNac do leiaute da DPS). MEI = 2 não visto no portal ainda. */
+export const OPCAO_SIMPLES = { meepp: '3', mei: '2' } as const;
+export const NOME_OPCAO_SIMPLES: Readonly<Record<string, string>> = {
+  '1': 'não optante do Simples',
+  '2': 'MEI',
+  '3': 'ME/EPP',
+};
 
 /** O Chosen cria, ao inicializar, um container irmão com id `<id do select>_chosen`. */
 export const CHOSEN = {

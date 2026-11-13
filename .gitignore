@@ -1,5 +1,7 @@
 node_modules/
 dist/
+dist-firefox/
+web-ext-artifacts/
 *.zip
 # HTML real do portal com dados pessoais — nunca commitar
 fixtures-raw/

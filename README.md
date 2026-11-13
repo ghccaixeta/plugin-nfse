@@ -1,14 +1,15 @@
 # Preenchedor NFS-e Nacional
 
-Extensão do Chrome (Manifest V3) que preenche o formulário do [Emissor Nacional da NFS-e](https://www.nfse.gov.br/EmissorNacional/) a partir de modelos salvos. Extensão **não oficial**.
+Extensão para Chrome e Firefox (Manifest V3) que preenche o formulário do [Emissor Nacional da NFS-e](https://www.nfse.gov.br/EmissorNacional/) a partir de modelos salvos. Extensão **não oficial**.
 
 ## O que ela faz
 
-Para quem emite notas parecidas todo mês (prestadores do Simples Nacional, ME/EPP), a extensão troca o preenchimento manual de ~20 campos por: **escolher o modelo → Preencher → conferir → Emitir**.
+Para quem emite notas parecidas todo mês (prestadores do Simples Nacional, ME/EPP ou MEI), a extensão troca o preenchimento manual de ~20 campos por: **escolher o modelo → Preencher → conferir → Emitir**.
 
-- **Painel lateral** com todos os campos da nota visíveis e editáveis, preenchidos pelos padrões globais ou pelo modelo escolhido.
+- **Painel lateral** (barra lateral no Firefox) com todos os campos da nota visíveis e editáveis, preenchidos pelos padrões globais ou pelo modelo escolhido.
 - **Modelos** por tomador (CNPJ, apelido, e-mail/telefone, valor, descrição, município, código de tributação, NBS): criar, editar e excluir.
-- **Padrões globais** editáveis (código de tributação, NBS, regime, alíquota).
+- **Padrões globais** editáveis (código de tributação, NBS, enquadramento ME/EPP ou MEI, regime, alíquota).
+- **MEI:** escolha "MEI" em Enquadramento; regime e alíquota somem e, na etapa Valores, só o valor é preenchido. Se o enquadramento não bater com o emitente do portal, a extensão para e avisa.
 - **Preenchimento automático** das etapas Pessoas → Serviço → Valores, avançando sozinho e **parando na tela de conferência**.
 - **Importar/exportar** modelos (e, se quiser, os padrões) em JSON, pela página de opções.
 
@@ -16,7 +17,7 @@ O que ela **não** faz:
 
 - Nunca clica em "Emitir NFS-e". A emissão é sempre sua, depois de conferir.
 - Nenhum dado sai do navegador: tudo fica em `chrome.storage.local`, sem servidor e sem telemetria.
-- Não cobre emissão em lote, tomador CPF/exterior/não informado nem IBS/CBS.
+- Não cobre emissão em lote, tomador CPF/exterior/não informado, emitente não optante do Simples nem IBS/CBS.
 
 ## Configurar no Chrome
 
@@ -38,10 +39,49 @@ Requisitos: Node.js 22.18 ou mais novo e Chrome 116 ou mais novo.
 
 Depois de alterar o código, rode `npm run build` de novo e clique em **Recarregar** (↻) no card da extensão em `chrome://extensions`. Recarregue também a aba do portal, para que os content scripts novos sejam injetados.
 
+## Configurar no Firefox
+
+Requisitos: Node.js 22.18 ou mais novo e Firefox 140 ou mais novo (desktop).
+
+1. Gere o build do Firefox:
+
+   ```bash
+   npm install
+   npm run build:firefox
+   ```
+
+   O build sai na pasta `dist-firefox/`.
+
+### Testar (instalação temporária)
+
+2. Abra `about:debugging#/runtime/this-firefox` no Firefox.
+3. Clique em **Carregar extensão temporária…** e selecione o arquivo `dist-firefox/manifest.json`.
+
+A extensão some quando o Firefox fecha. Alternativa: `npm run firefox:run` abre um Firefox limpo já com a extensão e o portal carregados, e recarrega sozinho quando `dist-firefox/` muda.
+
+### Instalar de forma permanente
+
+O Firefox comum só instala extensões assinadas pela Mozilla. Há dois caminhos:
+
+- **Não listada (uso próprio/da equipe):** crie uma chave de API em [addons.mozilla.org/developers/addon/api/key](https://addons.mozilla.org/developers/addon/api/key/), exporte-a e assine:
+
+  ```bash
+  export WEB_EXT_API_KEY=...      # nunca commitar
+  export WEB_EXT_API_SECRET=...
+  npm run firefox:assinar
+  ```
+
+  O `.xpi` assinado sai em `web-ext-artifacts/`. Para instalar, arraste o arquivo para uma janela do Firefox (ou `about:addons` → engrenagem → **Instalar extensão de um arquivo…**).
+- **Publicada no AMO (addons.mozilla.org):** envie o pacote pela página de desenvolvedor; passa por revisão da Mozilla e fica disponível na loja.
+
+O ID da extensão no Firefox fica fixo em `build/manifest.ts` (`GECKO_ID`) — não mude depois da primeira assinatura.
+
+No Firefox, o ícone da extensão abre e fecha a **barra lateral**. Se o preenchimento não começar, confira em `about:addons` → extensão → **Permissões** se o acesso a `www.nfse.gov.br` está liberado.
+
 ## Como usar
 
 1. Entre no Emissor Nacional e abra a emissão de uma nota (etapa **Pessoas**).
-2. Clique no ícone da extensão para abrir o painel lateral.
+2. Clique no ícone da extensão para abrir o painel lateral (no Firefox, a barra lateral).
 3. Escolha um modelo (ou preencha os campos), confira e clique em **Preencher**.
 4. A extensão preenche as etapas e para na tela de conferência. Confira a nota e clique em **Emitir NFS-e** você mesmo.
 
@@ -53,6 +93,10 @@ Para importar ou exportar modelos, abra as opções da extensão (botão direito
 |---|---|
 | `npm test` | Testes (Vitest + jsdom) e verificação de vazamento de dados reais |
 | `npm run typecheck` | Checagem de tipos |
-| `npm run build` | Gera `dist/` |
+| `npm run build` | Gera `dist/` (Chrome) |
+| `npm run build:firefox` | Gera `dist-firefox/` (Firefox, manifest convertido por `build/manifest.ts`) |
+| `npm run firefox:lint` | Valida `dist-firefox/` com o `web-ext lint` |
+| `npm run firefox:run` | Abre um Firefox de teste com a extensão |
+| `npm run firefox:assinar` | Assina `dist-firefox/` como não listada (precisa de `WEB_EXT_API_KEY`/`WEB_EXT_API_SECRET`) |
 
 Estrutura e decisões em `.specs/` (comece por `.specs/project/PROJECT.md` e `.specs/codebase/ARCHITECTURE.md`). Os seletores do portal ficam todos em `src/portal/seletores.ts`; quando o portal mudar, a correção costuma ser ali.

@@ -46,6 +46,7 @@ describe('formularioDePadroes (NFSE-01, NFSE-15)', () => {
       nbs: '115029000',
       regime: '1',
       aliquota: '2,01',
+      enquadramento: 'meepp',
     });
   });
 
@@ -69,6 +70,7 @@ describe('aplicarModelo (NFSE-11)', () => {
       municipio: 'Goiânia/GO',
       codigoTributacao: '010701',
       nbs: '115013000',
+      enquadramento: 'meepp',
       regime: '2',
       aliquota: '3,50',
     });
@@ -96,6 +98,7 @@ describe('lerNota (NFSE-02, NFSE-03, NFSE-12)', () => {
         municipio: undefined,
         codigoTributacao: '010101',
         nbs: '115029000',
+        enquadramento: 'meepp',
         regime: 1,
         aliquotaCentesimos: 201,
       },
@@ -155,7 +158,12 @@ describe('padroesDoFormulario (NFSE-16)', () => {
       aliquotaCentesimos: 450,
       descricao: 'Desenvolvimento',
       municipio: 'Goiânia/GO',
+      enquadramento: 'meepp',
     });
+  });
+
+  it('MEI-04 salva o enquadramento MEI', () => {
+    expect(padroesDoFormulario(preenchido({ enquadramento: 'mei' })).enquadramento).toBe('mei');
   });
 });
 
@@ -168,5 +176,27 @@ describe('campoDoFormulario', () => {
     expect(campoDoFormulario('constructor')).toBeNull();
     expect(campoDoFormulario('toString')).toBeNull();
     expect(campoDoFormulario('hasOwnProperty')).toBeNull();
+  });
+});
+
+describe('Enquadramento MEI (MEI-01..04)', () => {
+  it('MEI-01 vem dos padrões; padrões antigos sem o campo viram ME/EPP', () => {
+    expect(formularioDePadroes({ ...PADROES, enquadramento: 'mei' }, HOJE).enquadramento).toBe('mei');
+    expect(formularioDePadroes(PADROES, HOJE).enquadramento).toBe('meepp');
+  });
+
+  it('MEI-02 com MEI, regime e alíquota não são exigidos (nem se ilegíveis)', () => {
+    const r = lerNota(preenchido({ enquadramento: 'mei', regime: '', aliquota: 'abc' }));
+    expect(r.ok).toBe(true);
+    expect(r.ok && r.nota.enquadramento).toBe('mei');
+  });
+
+  it('MEI-03 com ME/EPP, alíquota vazia continua bloqueando', () => {
+    const r = lerNota(preenchido({ enquadramento: 'meepp', aliquota: '' }));
+    expect(r.ok ? [] : r.erros.map((e) => e.campo)).toEqual(['aliquota']);
+  });
+
+  it('MEI-01 trocar de modelo mantém o enquadramento atual', () => {
+    expect(aplicarModelo(preenchido({ enquadramento: 'mei' }), MODELO).enquadramento).toBe('mei');
   });
 });

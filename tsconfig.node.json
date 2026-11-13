@@ -5,5 +5,5 @@
   "compilerOptions": {
     "types": ["node", "chrome", "vite/client"]
   },
-  "include": ["tests", "vite.config.ts", "vite.content.config.ts", "vitest.config.ts"]
+  "include": ["tests", "build", "vite.config.ts", "vite.content.config.ts", "vitest.config.ts"]
 }

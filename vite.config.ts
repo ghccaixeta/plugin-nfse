@@ -1,18 +1,24 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
+import { alvoDoBuild, manifestParaFirefox } from './build/manifest';
 
 const raiz = resolve(import.meta.dirname, 'src');
+const alvo = alvoDoBuild();
 
-/** Copia `src/manifest.json` para `dist/` sem passar pelo bundler. */
+/** Copia `src/manifest.json` sem passar pelo bundler; no Firefox, convertido. */
 function copiarManifest(): Plugin {
   return {
     name: 'copiar-manifest',
     generateBundle() {
+      const texto = readFileSync(resolve(raiz, 'manifest.json'), 'utf8');
       this.emitFile({
         type: 'asset',
         fileName: 'manifest.json',
-        source: readFileSync(resolve(raiz, 'manifest.json'), 'utf8'),
+        source:
+          alvo.navegador === 'firefox'
+            ? `${JSON.stringify(manifestParaFirefox(JSON.parse(texto)), null, 2)}\n`
+            : texto,
       });
     },
   };
@@ -25,9 +31,9 @@ export default defineConfig({
   publicDir: false,
   plugins: [copiarManifest()],
   build: {
-    outDir: resolve(import.meta.dirname, 'dist'),
+    outDir: resolve(import.meta.dirname, alvo.pastaSaida),
     emptyOutDir: true,
-    // Chrome suporta modulepreload nativamente; o polyfill só gera um arquivo a mais.
+    // Chrome e Firefox suportam modulepreload nativamente; o polyfill só gera um arquivo a mais.
     modulePreload: { polyfill: false },
     rollupOptions: {
       input: {

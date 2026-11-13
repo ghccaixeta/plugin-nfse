@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
+import { alvoDoBuild } from './build/manifest';
 
 // Etapas 2 e 3 do build: um content script por execução (`--mode ponte` ou
 // `--mode preenchedor`). Content scripts não carregam ES modules e o formato
@@ -14,7 +15,7 @@ export default defineConfig(({ mode }) => {
   return {
     publicDir: false,
     build: {
-      outDir: resolve(import.meta.dirname, 'dist'),
+      outDir: resolve(import.meta.dirname, alvoDoBuild().pastaSaida),
       emptyOutDir: false,
       lib: {
         entry: resolve(import.meta.dirname, `src/content/${nome}.ts`),

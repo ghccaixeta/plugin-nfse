@@ -1,11 +1,12 @@
 # Preenchedor NFS-e Nacional
 
-Extensão Chrome MV3 (TypeScript + Vite) que preenche o formulário do Emissor Nacional da NFS-e. Idioma do projeto: português (PT-BR).
+Extensão MV3 para Chrome e Firefox (TypeScript + Vite) que preenche o formulário do Emissor Nacional da NFS-e. Idioma do projeto: português (PT-BR).
 
 ## Comandos
 
 - `npm test` — Vitest
 - `npm run build` — gera `dist/` (carregar como extensão sem compactação)
+- `npm run build:firefox` — gera `dist-firefox/`; `npm run firefox:lint` valida
 - `npm run typecheck`
 
 ## Regras

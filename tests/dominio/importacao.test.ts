@@ -142,3 +142,11 @@ describe('mesclarModelos (NFSE-18)', () => {
     expect(atuais).toEqual(copia);
   });
 });
+
+describe('Enquadramento na importação (MEI-04)', () => {
+  it('MEI-04 importa padrões com enquadramento MEI', () => {
+    const comMei = { ...padroes, enquadramento: 'mei' as const };
+    const r = analisarImportacao(JSON.stringify(exportar(comMei, [])), []);
+    expect(r).toEqual({ ok: true, padroes: comMei, novos: [], conflitos: [] });
+  });
+});
