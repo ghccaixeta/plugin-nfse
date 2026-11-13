@@ -107,6 +107,10 @@ Descobertas:
   `blur`/`focusout` sintéticos nesse caso (`src/portal/acoes.ts`).
 - O campo do CNPJ já aceita CNPJ alfanumérico (classe `cpfcnpj-alfanumerico`, `AplicarMascaraCpfCnpjAlfanumerico`).
 - `RecuperarOpcaoSN`: se a opção do Simples do emitente não for "3", o portal esconde e limpa o regime de apuração.
+- `#SimplesNacional_Opcao` (hidden, Pessoas) traz a opção do emitente depois que ele carrega. Visto no portal: `3` (ME/EPP).
+  `2` = MEI e `1` = não optante vêm da tabela `opSimpNac` do leiaute da DPS, **ainda não vistos no portal**. A extensão
+  confere essa opção contra o Enquadramento do painel (MEI-06). Valores para MEI (só o valor do serviço) vem de relato do
+  usuário, sem fixture.
 
 ## Momento de agir (T14, 09/11/2026)
 

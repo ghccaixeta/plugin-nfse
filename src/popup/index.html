@@ -104,6 +104,14 @@
         <fieldset class="card">
           <legend>Simples Nacional</legend>
           <div class="campo">
+            <label for="enquadramento">Enquadramento</label>
+            <select id="enquadramento">
+              <option value="meepp">ME/EPP</option>
+              <option value="mei">MEI</option>
+            </select>
+            <small class="erro" data-erro-de="enquadramento"></small>
+          </div>
+          <div class="campo" data-so-me-epp>
             <label for="regime">Regime de apuração</label>
             <select id="regime">
               <option value="1">1 — Tributos federais e municipal pelo Simples Nacional</option>
@@ -112,7 +120,7 @@
             </select>
             <small class="erro" data-erro-de="regime"></small>
           </div>
-          <div class="campo estreito">
+          <div class="campo estreito" data-so-me-epp>
             <label for="aliquota">Alíquota</label>
             <div class="afixo">
               <input id="aliquota" class="mono" inputmode="decimal" placeholder="2,01" />

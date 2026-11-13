@@ -19,3 +19,4 @@
 | Conferência | Tela `/DPS/EmitirNFSe` com o botão "Emitir NFS-e"; a extensão nunca clica nele. |
 | Ponte / Preenchedor | Content scripts no mundo isolado / no mundo MAIN. |
 | Tomador | Cliente da nota (só CNPJ na v1). Não usar "cliente" no código. |
+| Enquadramento | Situação do emitente no Simples para a extensão: `meepp` (ME/EPP, padrão) ou `mei`. No portal é `SimplesNacional.Opcao` (3 / 2). |

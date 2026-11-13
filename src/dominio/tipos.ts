@@ -1,6 +1,9 @@
 /** Regime de apuração do Simples Nacional, como o portal numera as opções. */
 export type Regime = 1 | 2 | 3;
 
+/** Enquadramento do emitente no Simples. Em Padrões salvos antes do MEI-01 vem ausente = `meepp`. */
+export type Enquadramento = 'meepp' | 'mei';
+
 export type Etapa = 'pessoas' | 'servico' | 'valores' | 'conferencia';
 
 /** Nota atual: valores do popup no momento do clique em "Preencher". */
@@ -14,8 +17,9 @@ export interface DadosNota {
   municipio?: string; // 'Nome/UF'; vazio = município do emitente
   codigoTributacao: string; // 6 dígitos
   nbs: string; // 9 dígitos
-  regime: Regime;
-  aliquotaCentesimos: number; // 2,01 → 201
+  enquadramento: Enquadramento;
+  regime: Regime; // só ME/EPP
+  aliquotaCentesimos: number; // 2,01 → 201; só ME/EPP
 }
 
 /** NFSE-10: o modelo não guarda data, regime nem alíquota. */
@@ -34,6 +38,7 @@ export interface Modelo {
 export interface Padroes {
   codigoTributacao: string;
   nbs: string;
+  enquadramento?: Enquadramento;
   regime: Regime;
   aliquotaCentesimos: number;
   descricao?: string;

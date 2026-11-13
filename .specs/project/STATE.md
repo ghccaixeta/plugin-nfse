@@ -7,6 +7,7 @@
 
 - 2026-11-09: Interface no **painel lateral** (`chrome.sidePanel`) em vez de popup, a pedido do dev. Perguntas via `<dialog>` (suporte de `prompt`/`confirm` no painel não confirmado). Pasta segue `src/popup`.
 - 2026-11-13: **Suporte a Firefox** por build separado (`dist-firefox/`, manifest convertido em `build/manifest.ts`) em vez de manifest único cross-browser: mantém o `dist/` do Chrome idêntico e sem avisos de chaves desconhecidas. ID Gecko = UUID `{43c62ad5-ac62-4079-a086-25b9f04f1584}` (escolha do dev; fixo após a 1ª assinatura). Mínimo Firefox 140 (ESR) por causa de `data_collection_permissions`. Spec: `.specs/features/2026-11-13-suporte-firefox/`.
+- 2026-11-13: **MEI** escolhido no painel ("Enquadramento", salvo nos Padrões; ausente = ME/EPP) e conferido contra `#SimplesNacional_Opcao` do portal em Pessoas — decisão do dev (opção visível) + rede de segurança. Código `2` = MEI vem do leiaute nacional, não visto no portal; Valores MEI = só o valor (relato do dev). Pendente: fixture/teste real com emitente MEI. Spec: `.specs/features/2026-11-13-suporte-mei/`.
 
 ## Lições
 

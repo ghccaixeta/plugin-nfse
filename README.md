@@ -4,11 +4,12 @@ Extensão para Chrome e Firefox (Manifest V3) que preenche o formulário do [Emi
 
 ## O que ela faz
 
-Para quem emite notas parecidas todo mês (prestadores do Simples Nacional, ME/EPP), a extensão troca o preenchimento manual de ~20 campos por: **escolher o modelo → Preencher → conferir → Emitir**.
+Para quem emite notas parecidas todo mês (prestadores do Simples Nacional, ME/EPP ou MEI), a extensão troca o preenchimento manual de ~20 campos por: **escolher o modelo → Preencher → conferir → Emitir**.
 
 - **Painel lateral** (barra lateral no Firefox) com todos os campos da nota visíveis e editáveis, preenchidos pelos padrões globais ou pelo modelo escolhido.
 - **Modelos** por tomador (CNPJ, apelido, e-mail/telefone, valor, descrição, município, código de tributação, NBS): criar, editar e excluir.
-- **Padrões globais** editáveis (código de tributação, NBS, regime, alíquota).
+- **Padrões globais** editáveis (código de tributação, NBS, enquadramento ME/EPP ou MEI, regime, alíquota).
+- **MEI:** escolha "MEI" em Enquadramento; regime e alíquota somem e, na etapa Valores, só o valor é preenchido. Se o enquadramento não bater com o emitente do portal, a extensão para e avisa.
 - **Preenchimento automático** das etapas Pessoas → Serviço → Valores, avançando sozinho e **parando na tela de conferência**.
 - **Importar/exportar** modelos (e, se quiser, os padrões) em JSON, pela página de opções.
 
@@ -16,7 +17,7 @@ O que ela **não** faz:
 
 - Nunca clica em "Emitir NFS-e". A emissão é sempre sua, depois de conferir.
 - Nenhum dado sai do navegador: tudo fica em `chrome.storage.local`, sem servidor e sem telemetria.
-- Não cobre emissão em lote, tomador CPF/exterior/não informado nem IBS/CBS.
+- Não cobre emissão em lote, tomador CPF/exterior/não informado, emitente não optante do Simples nem IBS/CBS.
 
 ## Configurar no Chrome
 

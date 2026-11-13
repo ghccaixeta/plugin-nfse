@@ -24,6 +24,7 @@ let abaAtiva: chrome.tabs.Tab | undefined;
 
 const campo = (c: CampoFormulario) => $<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(c);
 const seletorModelo = $<HTMLSelectElement>('modelo');
+const camposSoMeEpp = document.querySelectorAll<HTMLElement>('[data-so-me-epp]');
 
 function lerFormulario(): Formulario {
   return Object.fromEntries(CAMPOS.map((c) => [c, campo(c).value])) as unknown as Formulario;
@@ -31,7 +32,14 @@ function lerFormulario(): Formulario {
 
 function escreverFormulario(form: Formulario): void {
   for (const c of CAMPOS) campo(c).value = form[c];
+  mostrarCamposDoEnquadramento();
   marcarErros([]);
+}
+
+/** MEI-02: MEI não usa regime nem alíquota do Simples. */
+function mostrarCamposDoEnquadramento(): void {
+  const mei = campo('enquadramento').value === 'mei';
+  for (const el of camposSoMeEpp) el.hidden = mei;
 }
 
 /** NFSE-03: marca cada campo inválido; erros sem campo no formulário vão para o status. */
@@ -150,8 +158,14 @@ async function escolherModelo(): Promise<void> {
   if (modelo) {
     escreverFormulario(aplicarModelo(atual, modelo)); // NFSE-11
   } else {
-    const { dataCompetencia, regime, aliquota } = atual;
-    escreverFormulario({ ...formularioDePadroes(await repo.lerPadroes(), new Date()), dataCompetencia, regime, aliquota });
+    const { dataCompetencia, enquadramento, regime, aliquota } = atual;
+    escreverFormulario({
+      ...formularioDePadroes(await repo.lerPadroes(), new Date()),
+      dataCompetencia,
+      enquadramento,
+      regime,
+      aliquota,
+    });
   }
   atualizarBotoesModelo();
 }
@@ -222,6 +236,7 @@ async function iniciar(): Promise<void> {
     void chrome.runtime.openOptionsPage();
   });
   seletorModelo.addEventListener('change', () => void escolherModelo());
+  campo('enquadramento').addEventListener('change', mostrarCamposDoEnquadramento);
   $('formulario').addEventListener('submit', (e) => {
     e.preventDefault();
     void preencher().catch(tratarErro);

@@ -16,6 +16,7 @@ const notaValida = (): DadosNota => ({
   municipio: 'Goiânia/GO',
   codigoTributacao: '010101',
   nbs: '115029000',
+  enquadramento: 'meepp',
   regime: 1,
   aliquotaCentesimos: 201,
 });
@@ -177,5 +178,26 @@ describe('cpfValido', () => {
     expect(cpfValido('52998224724')).toBe(false);
     expect(cpfValido('11111111111')).toBe(false);
     expect(cpfValido('529.982.247-25')).toBe(false);
+  });
+});
+
+describe('Enquadramento MEI (MEI-02..04)', () => {
+  it('MEI-02 nota MEI dispensa regime e alíquota', () => {
+    expect(validarNota({ ...notaValida(), enquadramento: 'mei', regime: 9 as never, aliquotaCentesimos: Number.NaN })).toEqual([]);
+  });
+
+  it('MEI-03 nota ME/EPP exige regime e alíquota', () => {
+    const invalida = { ...notaValida(), regime: 9 as never, aliquotaCentesimos: 0 };
+    expect(campos(validarNota(invalida))).toEqual(['regime', 'aliquotaCentesimos']);
+  });
+
+  it('MEI-02 nota sem enquadramento válido é rejeitada', () => {
+    expect(campos(validarNota({ ...notaValida(), enquadramento: undefined as never }))).toEqual(['enquadramento']);
+  });
+
+  it('MEI-04 padrões aceitam meepp, mei ou ausente e rejeitam outro valor', () => {
+    expect(validarPadroes({ ...padroesValidos(), enquadramento: 'mei' })).toEqual([]);
+    expect(validarPadroes(padroesValidos())).toEqual([]);
+    expect(campos(validarPadroes({ ...padroesValidos(), enquadramento: 'ltda' as never }))).toEqual(['enquadramento']);
   });
 });

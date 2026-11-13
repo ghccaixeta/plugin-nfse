@@ -29,6 +29,10 @@
 - Build `dist-firefox/`, barra lateral, scripts `web-ext`
 - Assinatura não listada / AMO: pendente (chaves do dev)
 
+**Suporte a MEI** - IMPLEMENTADA (teste real com emitente MEI pendente)
+
+- Enquadramento ME/EPP | MEI no painel; Valores só com o valor; conferência com o portal
+
 ---
 
 ## Considerações Futuras

@@ -46,6 +46,7 @@ const REGRAS = {
   municipio: [(v: unknown) => typeof v === 'string' && nomeDoMunicipio(v) !== undefined, 'Município deve estar no formato Nome/UF'],
   codigoTributacao: [textoCom(/^\d{6}$/), 'Código de tributação deve ter 6 dígitos'],
   nbs: [textoCom(/^\d{9}$/), 'NBS deve ter 9 dígitos'],
+  enquadramento: [(v: unknown) => v === 'meepp' || v === 'mei', 'Enquadramento inválido'],
   regime: [(v: unknown) => v === 1 || v === 2 || v === 3, 'Regime de apuração inválido'],
   aliquotaCentesimos: [inteiroEntre(1, 9999), 'Alíquota deve estar entre 0,01 e 99,99'],
 } as const satisfies Record<string, readonly [(v: unknown) => boolean, string]>;
@@ -63,24 +64,31 @@ function validar(obj: object, campos: readonly Campo[], opcionais: readonly Camp
   });
 }
 
+/** MEI-02: MEI não usa regime nem alíquota do Simples. */
+const SO_ME_EPP: readonly Campo[] = ['regime', 'aliquotaCentesimos'];
+
+const CAMPOS_NOTA: readonly Campo[] = [
+  'cnpjTomador',
+  'emailTomador',
+  'telefoneTomador',
+  'valorCentavos',
+  'descricao',
+  'dataCompetencia',
+  'municipio',
+  'codigoTributacao',
+  'nbs',
+  'enquadramento',
+  'regime',
+  'aliquotaCentesimos',
+];
+const CAMPOS_NOTA_MEI = CAMPOS_NOTA.filter((c) => !SO_ME_EPP.includes(c));
+
 export function validarNota(nota: DadosNota): ErroCampo[] {
-  return validar(
-    nota,
-    [
-      'cnpjTomador',
-      'emailTomador',
-      'telefoneTomador',
-      'valorCentavos',
-      'descricao',
-      'dataCompetencia',
-      'municipio',
-      'codigoTributacao',
-      'nbs',
-      'regime',
-      'aliquotaCentesimos',
-    ],
-    ['emailTomador', 'telefoneTomador', 'municipio'],
-  );
+  return validar(nota, nota.enquadramento === 'mei' ? CAMPOS_NOTA_MEI : CAMPOS_NOTA, [
+    'emailTomador',
+    'telefoneTomador',
+    'municipio',
+  ]);
 }
 
 /** Campos de um Modelo, na ordem das mensagens (também as chaves aceitas na importação). */
@@ -102,6 +110,7 @@ export const CAMPOS_PADROES = [
   'municipio',
   'codigoTributacao',
   'nbs',
+  'enquadramento',
   'regime',
   'aliquotaCentesimos',
 ] as const satisfies readonly (keyof Padroes & Campo)[];
@@ -111,5 +120,5 @@ export function validarModelo(modelo: Modelo): ErroCampo[] {
 }
 
 export function validarPadroes(padroes: Padroes): ErroCampo[] {
-  return validar(padroes, CAMPOS_PADROES, ['descricao', 'municipio']);
+  return validar(padroes, CAMPOS_PADROES, ['descricao', 'municipio', 'enquadramento']);
 }
