@@ -13,6 +13,7 @@ const dados: DadosNota = {
   dataCompetencia: '09/11/2026',
   codigoTributacao: '010101',
   nbs: '115029000',
+  enquadramento: 'meepp',
   regime: 1,
   aliquotaCentesimos: 201,
 };

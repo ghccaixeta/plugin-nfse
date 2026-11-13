@@ -5,7 +5,7 @@ import { executarPessoas } from '../../src/portal/etapa-pessoas';
 import { executarServico } from '../../src/portal/etapa-servico';
 import { executarValores } from '../../src/portal/etapa-valores';
 import { PESSOAS, SERVICO, VALORES } from '../../src/portal/seletores';
-import type { DadosNota } from '../../src/dominio/tipos';
+import type { DadosNota, Enquadramento } from '../../src/dominio/tipos';
 import { criarAcoesFalsas } from '../fakes/acoes';
 
 const nota = (extra: Partial<DadosNota> = {}): DadosNota => ({
@@ -15,6 +15,7 @@ const nota = (extra: Partial<DadosNota> = {}): DadosNota => ({
   dataCompetencia: '09/11/2026',
   codigoTributacao: '010101',
   nbs: '115029000',
+  enquadramento: 'meepp',
   regime: 1,
   aliquotaCentesimos: 201,
   ...extra,
@@ -37,6 +38,7 @@ describe('executarPessoas (NFSE-04)', () => {
       ['esperar', PESSOAS.nomeTomador.nome, 'preenchido'],
       ['marcarRadio', PESSOAS.intermediarioNaoInformado.nome],
       ['esperar', PESSOAS.municipioEmitente.nome, 'preenchido'],
+      ['lerValor', PESSOAS.opcaoSimples.nome],
       ['lerValor', PESSOAS.municipioEmitente.nome],
     ]);
     expect(r).toEqual({ municipioEmitente: MUNICIPIO_EMITENTE });
@@ -152,5 +154,56 @@ describe('executarValores (NFSE-06)', () => {
   it('NFSE-08 falha na alíquota propaga com o nome do campo', async () => {
     const { acoes } = criarAcoesFalsas({ falharEm: VALORES.aliquotaSN.nome });
     await expect(executarValores(acoes, nota())).rejects.toMatchObject({ campo: 'Alíquota do Simples Nacional' });
+  });
+});
+
+describe('Emitente MEI (MEI-05..08)', () => {
+  const portal = (opcao: string) =>
+    criarAcoesFalsas({
+      valores: { [PESSOAS.municipioEmitente.nome]: MUNICIPIO_EMITENTE, [PESSOAS.opcaoSimples.nome]: opcao },
+    });
+
+  it('MEI-05 MEI não seleciona o regime e segue o resto da etapa', async () => {
+    const { acoes, chamadas } = portal('2');
+    expect(await executarPessoas(acoes, nota({ enquadramento: 'mei' }))).toEqual({
+      municipioEmitente: MUNICIPIO_EMITENTE,
+    });
+    expect(chamadas.map((c) => c[1])).not.toContain(PESSOAS.regime.nome);
+    expect(chamadas.map((c) => c[1])).toContain(PESSOAS.nomeTomador.nome);
+  });
+
+  it.each<[Enquadramento, string, string]>([
+    ['mei', '3', 'Enquadramento do painel é MEI, mas o emitente no portal é ME/EPP. Ajuste e preencha de novo.'],
+    ['meepp', '2', 'Enquadramento do painel é ME/EPP, mas o emitente no portal é MEI. Ajuste e preencha de novo.'],
+    ['mei', '1', 'Enquadramento do painel é MEI, mas o emitente no portal é não optante do Simples. Ajuste e preencha de novo.'],
+  ])('MEI-06 painel %s × portal %s → para com aviso', async (enquadramento, opcao, mensagem) => {
+    const { acoes } = portal(opcao);
+    await expect(executarPessoas(acoes, nota({ enquadramento }))).rejects.toMatchObject({
+      campo: 'Enquadramento',
+      message: mensagem,
+    });
+  });
+
+  it.each([
+    ['mei', '2'],
+    ['meepp', '3'],
+    ['mei', ''], // portal sem a opção legível: não bloqueia
+  ] as const)('MEI-06 painel %s × portal %j → segue', async (enquadramento, opcao) => {
+    const { acoes } = portal(opcao);
+    await expect(executarPessoas(acoes, nota({ enquadramento }))).resolves.toEqual({
+      municipioEmitente: MUNICIPIO_EMITENTE,
+    });
+  });
+
+  it('MEI-07 Valores com MEI só digita o valor', async () => {
+    const { acoes, chamadas } = criarAcoesFalsas();
+    expect(await executarValores(acoes, nota({ enquadramento: 'mei' }))).toEqual({});
+    expect(chamadas).toEqual([['digitarMascarado', VALORES.valorServico.nome, '123456']]);
+  });
+
+  it('MEI-08 Valores com ME/EPP explícito faz o fluxo completo', async () => {
+    const { acoes, chamadas } = criarAcoesFalsas();
+    await executarValores(acoes, nota({ enquadramento: 'meepp' }));
+    expect(chamadas).toHaveLength(6);
   });
 });

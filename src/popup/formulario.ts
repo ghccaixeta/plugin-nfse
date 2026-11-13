@@ -1,7 +1,7 @@
 // Lógica pura do popup. O formulário guarda o texto dos campos (como o usuário
 // vê); `lerNota` converte para `DadosNota` e valida (NFSE-03).
 import { apenasDigitos, formatarCentavosBR, hojeBR, parseAliquotaBR, parseMoedaBR } from '../dominio/formatos';
-import type { DadosNota, Modelo, Padroes, Regime } from '../dominio/tipos';
+import type { DadosNota, Enquadramento, Modelo, Padroes, Regime } from '../dominio/tipos';
 import { validarNota, type ErroCampo } from '../dominio/validacao';
 
 /** Texto de cada campo do popup; as chaves são também os ids dos inputs. */
@@ -15,6 +15,7 @@ export interface Formulario {
   municipio: string; // 'Nome/UF' ou vazio
   codigoTributacao: string;
   nbs: string;
+  enquadramento: string; // 'meepp' | 'mei'
   regime: string; // '1' | '2' | '3'
   aliquota: string; // '2,01'
 }
@@ -32,6 +33,7 @@ export const CAMPOS = [
   'municipio',
   'codigoTributacao',
   'nbs',
+  'enquadramento',
   'regime',
   'aliquota',
 ] as const satisfies readonly CampoFormulario[];
@@ -78,6 +80,7 @@ export function formularioDePadroes(padroes: Padroes, hoje: Date): Formulario {
     municipio: ouVazio(padroes.municipio),
     codigoTributacao: padroes.codigoTributacao,
     nbs: padroes.nbs,
+    enquadramento: padroes.enquadramento ?? 'meepp',
     regime: String(padroes.regime),
     aliquota: formatarCentavosBR(padroes.aliquotaCentesimos),
   };
@@ -109,6 +112,7 @@ export function lerNota(form: Formulario): LeituraNota {
     municipio: semVazio(form.municipio),
     codigoTributacao: form.codigoTributacao.trim(),
     nbs: form.nbs.trim(),
+    enquadramento: form.enquadramento as Enquadramento,
     regime: Number(form.regime) as Regime,
     aliquotaCentesimos: numeroBR(form.aliquota, parseAliquotaBR) ?? Number.NaN,
   };
@@ -141,6 +145,7 @@ export function padroesDoFormulario(form: Formulario): Padroes {
   return {
     codigoTributacao: form.codigoTributacao.trim(),
     nbs: form.nbs.trim(),
+    enquadramento: form.enquadramento as Enquadramento,
     regime: Number(form.regime) as Regime,
     aliquotaCentesimos: numeroBR(form.aliquota, parseAliquotaBR) ?? Number.NaN,
     descricao: semVazio(form.descricao),
