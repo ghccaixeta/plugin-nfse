@@ -1,6 +1,6 @@
 # Preenchedor NFS-e Nacional
 
-**Visão:** Extensão do Chrome que preenche o formulário de emissão do Emissor Nacional da NFS-e a partir de modelos salvos, parando na tela de conferência para o usuário emitir.
+**Visão:** Extensão para Chrome e Firefox que preenche o formulário de emissão do Emissor Nacional da NFS-e a partir de modelos salvos, parando na tela de conferência para o usuário emitir.
 **Para:** Prestadores de serviço optantes do Simples Nacional (ME/EPP) que emitem notas parecidas todo mês. Qualquer pessoa pode instalar.
 **Resolve:** Preencher manualmente ~20 campos em 3 etapas a cada nota, com risco de errar código/NBS e ter que cancelar.
 
@@ -14,7 +14,7 @@
 
 **Core:**
 
-- Plataforma: Chrome Extension Manifest V3
+- Plataforma: Extensão Manifest V3 (Chrome; Firefox via build convertido)
 - Linguagem: TypeScript
 - Build: Vite
 - Armazenamento: `chrome.storage.local`
